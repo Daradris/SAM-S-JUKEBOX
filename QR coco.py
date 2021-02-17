@@ -47,7 +47,7 @@ class SamsJukebox:
         mixer.init()
         music_sound = mixer.Channel(0)
         system_sound = mixer.Channel(1)
-        system_sound.play(mixer.Sound("beep.mp3"))
+        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
 
         pause_state = False
         previous_songs = []
@@ -83,7 +83,7 @@ class SamsJukebox:
             if new_order == 'A 1':# play/ unpause
                 if current_song != '':
                     if pause_state == True:
-                        system_sound.play(mixer.Sound("beep.mp3"))
+                        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
                         music_sound.unpause()
                         pause_state = False
                 pass
@@ -92,7 +92,7 @@ class SamsJukebox:
                 if current_song != '':
                     if pause_state == False:
                         music_sound.pause()
-                        system_sound.play(mixer.Sound("beep.mp3"))
+                        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
                         pause_state = True
                     pass
 
@@ -100,7 +100,7 @@ class SamsJukebox:
                 if current_song != '':
                     if pause_state == False:
                         music_sound.pause()
-                        system_sound.play(mixer.Sound("beep.mp3"))
+                        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
                 pause_state = False
                 previous_songs = []
                 current_song = ''
@@ -113,15 +113,15 @@ class SamsJukebox:
                         next_songs.insert(0, current_song)
                         previous_songs[0] = current_song
                         previous_songs.pop(0)
-                        system_sound.play(mixer.Sound("beep.mp3"))
+                        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
                         music_sound.play(mixer.Sound(current_song))
                     else:
                         current_song = previous_songs[0]
                         previous_songs.pop(0)
-                        system_sound.play(mixer.Sound("beep.mp3"))
+                        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
                         music_sound.play(mixer.Sound(current_song))
                 else:
-                    system_sound.play(mixer.Sound("beep.mp3"))
+                    system_sound.play(mixer.Sound("system_setting/beep.mp3"))
                     music_sound.play(mixer.Sound(current_song))
                 pass
 
@@ -132,14 +132,14 @@ class SamsJukebox:
                             previous_songs.insert(0, current_song)
                             current_song = next_songs[0]
                             next_songs.pop(0)
-                            system_sound.play(mixer.Sound("beep.mp3"))
+                            system_sound.play(mixer.Sound("system_setting/beep.mp3"))
                             music_sound.play(mixer.Sound(current_song))
                 pass
 
             elif new_order == 'A 6': #playlist mode ON
                 if playlist_mode == False:
                     playlist_mode = True
-                    system_sound.play(mixer.Sound("beep.mp3"))
+                    system_sound.play(mixer.Sound("system_setting/beep.mp3"))
 
             elif new_order == 'A 7': # feeling lucky
                 new_order, _ = random.choice(list(music_lib.owned_cards.items()))
@@ -155,13 +155,13 @@ class SamsJukebox:
                             previous_songs.insert(0, current_song)
                         current_song = song_to_play
 
-                        system_sound.play(mixer.Sound("beep.mp3"))
+                        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
                         music_sound.play(mixer.Sound(song_to_play))
 
                     if playlist_mode == True:
 
                         next_songs.append(song_to_play)
-                        system_sound.play(mixer.Sound("beep.mp3"))
+                        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
 
                     if not music_lib.is_card_owned(new_order):
                         music_lib.add_card_to_owned_collection(new_order)
