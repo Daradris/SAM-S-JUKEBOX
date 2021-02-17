@@ -1,19 +1,19 @@
 import os
 import json
-# hash : song _ data : track number title album Artist 
+# hash : song _ data : track number title album Artist
 
 import hashlib
 
-from mutagen.mp3 import MP3  
-from mutagen.easyid3 import EasyID3  
+from mutagen.mp3 import MP3
+from mutagen.easyid3 import EasyID3
 
 
 class Library_manager:
     HASH_MAX_LENGTH = 10
     def __init__(self, filepath):
-        self.library_filepath = filepath 
-        self.owned_cards = None
-        self.music_files = None
+        self.library_filepath = filepath
+        self.owned_cards = {}
+        self.music_files = ()
 
     def library(self):
         self.music_files = {}
@@ -30,27 +30,29 @@ class Library_manager:
                     )
                     hasheds = str(self.song_hash(stringf))
                     self.music_files[hasheds] = music_filepath
-        with open("data/library.json", 'w', encoding ='utf8') as json_file: 
-            json.dump(self.music_files, json_file, ensure_ascii = False, indent=4) 
+        with open("data/library.json", 'w', encoding ='utf8') as json_file:
+            json.dump(self.music_files, json_file, ensure_ascii = False, indent=4)
 
     def song_hash(self, song_info):
         hash_object = hashlib.md5(song_info.encode())
         return hash_object.hexdigest()[0:self.HASH_MAX_LENGTH]
 
     def read_library(self):
-        open_file = open("data/library.json",) 
-        self.music_files = json.load(open_file) 
+        open_file = open("data/library.json",)
+        self.music_files = json.load(open_file)
         open_file.close()
 
     def find_music_path_from_library(self, hashcode):
         return self.music_files.get(hashcode, '')
 
     def read_collected_cards(self):
-        open_file = open("data/collected_cards.json",) 
-        self.owned_cards = json.load(open_file) 
+        open_file = open("data/collected_cards.json",)
+        self.owned_cards = json.load(open_file)
         open_file.close()
-    
+
     def is_card_owned(self, hashcode):
-        
-        return self.music_files.get(hashcode, '') 
+        return self.music_files.get(hashcode, '')
+
+    def add_card_to_owned_collection(self, hashcode):
+        self.owned_cards[hashcode] = self.music_files[hashcode]
 

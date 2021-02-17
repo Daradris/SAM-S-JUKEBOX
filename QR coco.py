@@ -5,7 +5,7 @@ from library_manager import Library_manager
 from imutils.video import VideoStream
 from pyzbar import pyzbar
 import imutils
-
+import random
 import time
 
 if __name__ == '__main__':
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     music_lib.read_library()
 
 
-    # QR CODE  
+    # QR CODE
     # initialize the video stream and allow the camera sensor to warm up
     print("[INFO] starting video stream...")
     vs = VideoStream(src=0).start()
@@ -53,7 +53,7 @@ if __name__ == '__main__':
         new_order = 'A 0'
         if data:
             if data != previous_order:
-                
+
                 new_order = data
                 previous_order = new_order
             time_of_last_oder = datetime.datetime.now()
@@ -127,19 +127,16 @@ if __name__ == '__main__':
                 playlist_mode = True
                 system_sound.play(mixer.Sound("beep.mp3"))
 
-
         elif new_order == 'A 7':
-            #feeling lucky
-            pass
-        
+            new_order, _ = random.choice(list(music_lib.owned_cards.items()))
+
         elif new_order == 'A 10':
-            pass # update library
+            music_lib.library()
+
         elif new_order != 'A 0': # PLAY MUSIC
             song_to_play = music_lib.find_music_path_from_library(new_order)
-            print (song_to_play)
             if song_to_play:
                 if playlist_mode == False:
-                    
                     if current_song:
                         previous_songs.insert(0, current_song)
                     current_song = song_to_play
@@ -148,12 +145,12 @@ if __name__ == '__main__':
                     music_sound.play(mixer.Sound(song_to_play))
 
                 if playlist_mode == True:
-                    
+
                     next_songs.append(song_to_play)
                     system_sound.play(mixer.Sound("beep.mp3"))
-                pass
-                if 
-            
+
+                if not music_lib.is_card_owned(new_order):
+                    music_lib.add_card_to_owned_collection(new_order)
 
         isplaying = music_sound.get_busy()
 
