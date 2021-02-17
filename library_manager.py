@@ -38,23 +38,25 @@ class Library_manager:
         return hash_object.hexdigest()[0:self.HASH_MAX_LENGTH]
 
     def read_library(self):
-        open_file = open("data/library.json")
-        if os.stat(open_file).st_size == 0:
-            self.music_files = json.load(open_file)
-        else:
+        filepath = "data/library.json"
+        if os.stat(filepath).st_size == 0:
             self.music_files = {}
-        open_file.close()
+        else:
+            open_file = open(filepath)
+            self.music_files = json.load(open_file)
+            open_file.close()
 
     def find_music_path_from_library(self, hashcode):
         return self.music_files.get(hashcode, '')
 
     def read_collected_cards(self):
-        open_file = open("data/collected_cards.json")
-        if os.stat(open_file).st_size == 0:
-            self.owned_cards = json.load(open_file)
+        filepath = "data/collected_cards.json"
+        if os.stat(filepath).st_size == 0:
+            self.owned_cards = {}
         else:
-             self.owned_cards = {}
-        open_file.close()
+            open_file = open(filepath)
+            self.owned_cards = json.load(open_file)
+            open_file.close()
 
     def is_card_owned(self, hashcode):
         return self.music_files.get(hashcode, '')
