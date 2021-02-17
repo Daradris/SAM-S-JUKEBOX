@@ -46,7 +46,6 @@ if __name__ == '__main__':
         frame = vs.read()
         # find the barcodes in the frame and decode each of the barcodes
         barcodes = pyzbar.decode(frame)
-        print (barcodes)
         if barcodes:
             data = barcodes[0].data.decode("utf-8")
         else:
@@ -132,8 +131,10 @@ if __name__ == '__main__':
         elif new_order == 'A 7':
             #feeling lucky
             pass
-
-        elif new_order != 'A 0': # PLAY MUSIC 
+        
+        elif new_order == 'A 10':
+            pass # update library
+        elif new_order != 'A 0': # PLAY MUSIC
             song_to_play = music_lib.find_music_path_from_library(new_order)
             print (song_to_play)
             if song_to_play:
@@ -151,6 +152,8 @@ if __name__ == '__main__':
                     next_songs.append(song_to_play)
                     system_sound.play(mixer.Sound("beep.mp3"))
                 pass
+                if 
+            
 
         isplaying = music_sound.get_busy()
 

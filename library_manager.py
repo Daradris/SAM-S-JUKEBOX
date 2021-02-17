@@ -12,7 +12,7 @@ class Library_manager:
     HASH_MAX_LENGTH = 10
     def __init__(self, filepath):
         self.library_filepath = filepath 
-        
+        self.owned_cards = None
         self.music_files = None
 
     def library(self):
@@ -44,7 +44,13 @@ class Library_manager:
 
     def find_music_path_from_library(self, hashcode):
         return self.music_files.get(hashcode, '')
-if __name__ == '__main__':
-    filepath = """H:\Music"""
-    lib = Library_manager(filepath)
-    lib.library()
+
+    def read_collected_cards(self):
+        open_file = open("data/collected_cards.json",) 
+        self.owned_cards = json.load(open_file) 
+        open_file.close()
+    
+    def is_card_owned(self, hashcode):
+        
+        return self.music_files.get(hashcode, '') 
+
