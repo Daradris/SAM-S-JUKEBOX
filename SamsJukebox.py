@@ -1,7 +1,7 @@
 from pygame import mixer
 import cv2
 import datetime
-from library_manager import Library_manager
+from library import Library_manager
 from imutils.video import VideoStream
 from pyzbar import pyzbar
 import imutils
@@ -19,6 +19,9 @@ class SamsJukebox:
     @staticmethod
     def setup(library_path):
         Setting.set_music_library_path(library_path)
+        filepath = Setting.music_library_path()
+        music_lib = Library_manager(filepath)
+        music_lib.library()
 
     @staticmethod
     def run():
