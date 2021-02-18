@@ -1,1 +1,1 @@
-from .library_manager import Library_manager
+from .qr_reader import QRReader

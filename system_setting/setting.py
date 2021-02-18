@@ -5,7 +5,7 @@ class Setting:
     INI_FILEPATH = 'system_setting/option.ini'
 
     @staticmethod
-    def set_music_library_path(music_library_path):
+    def set_library_path(music_library_path):
         config = configparser.ConfigParser()
         config['DEFAULT'] = {}
         config['PATH'] = {}
@@ -15,7 +15,7 @@ class Setting:
             config.write(configfile)
 
     @staticmethod
-    def music_library_path():
+    def library_path():
         config = configparser.ConfigParser()
         config.read(Setting.INI_FILEPATH)
         return config['PATH']['MUSIC_LIBRARY']

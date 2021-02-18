@@ -8,14 +8,16 @@ from mutagen.mp3 import MP3
 from mutagen.easyid3 import EasyID3
 
 
-class Library_manager:
+class MusicLibrary:
+
     HASH_MAX_LENGTH = 10
+
     def __init__(self, filepath):
         self.library_filepath = filepath
         self.owned_cards = {}
         self.music_files = ()
 
-    def library(self):
+    def setup(self):
         self.music_files = {}
         for root, _, files in os.walk(self.library_filepath):
             for file in files:
@@ -30,15 +32,15 @@ class Library_manager:
                     )
                     hasheds = str(self.song_hash(stringf))
                     self.music_files[hasheds] = music_filepath
-        with open("./data/library.json", 'w', encoding ='utf8') as json_file:
+        with open("data/library.json", 'w', encoding ='utf8') as json_file:
             json.dump(self.music_files, json_file, ensure_ascii = False, indent=4)
 
     def song_hash(self, song_info):
         hash_object = hashlib.md5(song_info.encode())
         return hash_object.hexdigest()[0:self.HASH_MAX_LENGTH]
 
-    def read_library(self):
-        filepath = "./data/library.json"
+    def load(self):
+        filepath = "data/library.json"
         if os.stat(filepath).st_size == 0:
             self.music_files = {}
         else:
@@ -50,7 +52,7 @@ class Library_manager:
         return self.music_files.get(hashcode, '')
 
     def read_collected_cards(self):
-        filepath = "./data/collected_cards.json"
+        filepath = "data/collected_cards.json"
         if os.stat(filepath).st_size == 0:
             self.owned_cards = {}
         else:
