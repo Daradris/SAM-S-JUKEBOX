@@ -10,12 +10,9 @@ from PIL import Image
 from data import MusicLibrary
 import os
 import json
-# hash : song _ data : track number title album Artist
 import qrcode
-# importing the date class datetime module
 from datetime import date
 current_date = date.today()
-# creating the date object of today's date
 current_year = current_date.year
 import hashlib
 
@@ -33,33 +30,36 @@ class CardMaker:
 
     def generate_deck(self, playlist_name):
         playlists_path = Setting.playlist_path()
+        default_wd = os.getcwd()
+        print (default_wd)
+        os.chdir(playlists_path)
 
-
+        print (os.getcwd())
         playlist_filepath = os.path.join(playlists_path, playlist_name + '.m3u' )
-
+        if not os.path.isfile(playlist_filepath):
+            return None
         #deal with logo
-        logo_path = os.path.join(playlists_path, playlist_name + '.png' )
-        if not os.path.isfile(logo_path):
-            logo_path = 'ForgedCards\\template\\logo.png'
-        ribbon_path = 'ForgedCards\\template\\ribbon.png'
 
-
-
-
-        ##
-
-        with open(playlist_filepath) as f:
+        with open(playlist_filepath, "r", encoding='utf-8') as f:
             content = f.readlines()
-        music_filepaths = [CardMaker.combine_with_duplicate(playlists_path, x.strip()) for x in content]
-        n = 0
+
+        music_filepaths = [os.path.normpath(x.strip()) for x in content]
+
         print (music_filepaths)
+        logo_path = os.path.join(playlist_name + '.png' )
+        if not os.path.isfile(logo_path):
+            logo_path = os.path.join(default_wd, 'ForgedCards\\template\\logo.png')
+        ribbon_path = os.path.join(default_wd, 'ForgedCards\\template\\ribbon.png')
+
+
+        n = 0
 
         prs = Presentation()
         prs.slide_width = Cm(6)
         prs.slide_height = Cm(9)
         blank_slide_layout = prs.slide_layouts[6]
         for music_file in music_filepaths:
-
+            print (music_file)
             if music_file.endswith(".mp3"):
                 n = n+1
                 song_info = MP3(music_file, ID3=EasyID3)
@@ -67,26 +67,26 @@ class CardMaker:
                     song_info['tracknumber'][0],
                     song_info['title'][0],
                     song_info['album'][0],
-                    song_info['artist'][0]
+                    song_info['artist'][0].split(',')[0]
                 )
                 hash_object = hashlib.md5(stringf.encode())
                 hasheds = str( hash_object.hexdigest()[0:10])
 
                 qr_code = qrcode.make(hasheds)
                 # save img to a file
-                qr_code.save('ForgedCards/tmp/qr_code.png')
+                qr_code.save(os.path.join(default_wd, 'ForgedCards/tmp/qr_code.png'))
 
 
 
                 tags = ID3(music_file)
                 pict = tags.get("APIC:").data
                 im = Image.open(BytesIO(pict))
-                im.save('ForgedCards/tmp/album_cover.png')
+                im.save(os.path.join(default_wd, 'ForgedCards/tmp/album_cover.png'))
 
                 # FRONT SLIDE
                 front_slide = prs.slides.add_slide(blank_slide_layout)
                 top = left = Cm(0)
-                pic = front_slide.shapes.add_picture(os.path.normpath('ForgedCards/tmp/album_cover.png'), Cm(0.4), Cm(0.4), Cm(5.2), Cm(5.2))
+                front_slide.shapes.add_picture(os.path.normpath(os.path.join(default_wd, 'ForgedCards/tmp/album_cover.png')), Cm(0.4), Cm(0.4), Cm(5.2), Cm(5.2))
 
                 artist_txBox = front_slide.shapes.add_textbox(Cm(0.4), Cm(5.8), Cm(5.2), Cm(1))
                 artist_text_frame = artist_txBox.text_frame
@@ -169,7 +169,7 @@ class CardMaker:
                 slide = prs.slides.add_slide(blank_slide_layout)
                 #adding Qr code
                 top = left = Cm(0)
-                pic = slide.shapes.add_picture('ForgedCards/tmp/qr_code.png', left, top, Cm(6), Cm(6))
+                pic = slide.shapes.add_picture(os.path.join(default_wd, 'ForgedCards/tmp/qr_code.png'), left, top, Cm(6), Cm(6))
 
                 #adding a ribbon
                 left = Cm(0)
@@ -219,22 +219,7 @@ class CardMaker:
 
                 p.alignment = PP_ALIGN.CENTER
 
-        prs.save('ForgedCards\\test.pptx')
-
-
-
-    @staticmethod
-    def combine_with_duplicate(root, rel_path):
-        rs = root.split("/")
-        rps = rel_path.split("/")
-        popped = False
-        for v in rs:
-            if v == rps[0]:
-                rps.pop(0)
-                popped = True
-            elif popped:
-                break
-        return "/".join(rs+rps)
+        prs.save(os.path.join(default_wd, 'ForgedCards', playlist_name+ '.pptx'))
 
 import argparse
 
@@ -246,4 +231,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     cardmaker = CardMaker()
-    cardmaker.generate_deck(args.Playlist_Name)
+    #cardmaker.generate_deck(args.Playlist_Name)
+    cardmaker.generate_deck('The Raccoon')
