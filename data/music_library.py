@@ -63,16 +63,3 @@ class MusicLibrary:
 
     def add_card_to_owned_collection(self, hashcode):
         self.owned_cards[hashcode] = self.music_files[hashcode]
-
-    def combine_with_duplicate(root, rel_path):
-        rs = root.split("/")
-        rps = rel_path.split("/")
-        popped = False
-        for v in rs:
-            if v == rps[0]:
-                rps.pop(0)
-                popped = True
-            elif popped:
-                break
-
-        return "/".join(rs+rps)
