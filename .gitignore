@@ -127,10 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.vscode/
 data/library.json
 system_setting/option.ini
 *.pptx
 .vscode/settings.json
 ForgedCards/tmp/album_cover.png
 ForgedCards/tmp/qr_code.png
-ForgedCards/tmp/album_cover.png
+
