@@ -97,13 +97,13 @@ class MusicPlayer:
             self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
 
     def idle(self):
-            isplaying = music_sound.get_busy()
+            isplaying = self.music_sound.get_busy()
 
             if isplaying == 0 : # NOT PLAYING
-                if next_songs:
-                    current_song = next_songs[0]
-                    next_songs.pop(0)
-                    music_sound.play(mixer.Sound(current_song))
+                if self.next_songs:
+                    self.current_song = self.next_songs[0]
+                    self.next_songs.pop(0)
+                    self.music_sound.play(mixer.Sound(self.current_song))
                 else:
-                    current_song = ''
+                    self.current_song = ''
 
