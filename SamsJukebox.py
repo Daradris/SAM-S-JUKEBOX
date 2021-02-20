@@ -12,7 +12,7 @@ import time
 import argparse
 
 from system_setting import Setting
-from library import QRReader
+from library import QRReader, MusicPlayer
 
 class SamsJukebox:
 
@@ -39,33 +39,19 @@ class SamsJukebox:
         current_song = ''
         next_songs = []
         playlist_mode = False
-
+        music_player = MusicPlayer()
         while True:
             # QR CODE
             detected_qr_code = qr_reader.read()
 
-            previous_songs = previous_songs[0:5]
-            isplaying = music_sound.get_busy()
-
+            music_player.clear_history()
 
             if detected_qr_code == 'A 1':# play/ unpause
-                if current_song != '':
-                    if pause_state == True:
-                        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
-                        time.sleep(2.0)
-
-                        music_sound.unpause()
-                        pause_state = False
-                pass
+                music_player.unpause()
 
             elif detected_qr_code == 'A 2':# PAUSE
-                if current_song != '':
-                    if pause_state == False:
-                        music_sound.pause()
-                        time.sleep(2.0)
-                        system_sound.play(mixer.Sound("system_setting/beep.mp3"))
-                        pause_state = True
-                    pass
+                music_player.pause()
+
 
             elif detected_qr_code == 'A 3': # STOP
                 if current_song != '':
