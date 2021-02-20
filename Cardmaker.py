@@ -63,8 +63,6 @@ for music_file in music_filepaths:
         pict = tags.get("APIC:").data
         im = Image.open(BytesIO(pict))
         im.save('ForgedCards/tmp/album_cover.png')
-        print('Picture size : ' + str(im.size))
-
 
         # FRONT SLIDE
         front_slide = prs.slides.add_slide(blank_slide_layout)
@@ -201,20 +199,5 @@ for music_file in music_filepaths:
         font.color.rgb = RGBColor(66, 66, 78)
 
         p.alignment = PP_ALIGN.CENTER
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 prs.save('ForgedCards\\test.pptx')
