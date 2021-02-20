@@ -161,9 +161,7 @@ class CardMaker:
                 bottom_right_p.alignment = PP_ALIGN.RIGHT
 
                 # Set logo
-                pic = front_slide.shapes.add_picture(logo_path, Cm(4.4), Cm(7.4), Cm(1), Cm(1))
-
-
+                front_slide.shapes.add_picture(logo_path, Cm(4.4), Cm(7.4), Cm(1), Cm(1))
 
                 # BACK SLIDE
                 slide = prs.slides.add_slide(blank_slide_layout)
@@ -231,5 +229,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     cardmaker = CardMaker()
-    #cardmaker.generate_deck(args.Playlist_Name)
-    cardmaker.generate_deck('The Raccoon')
+    cardmaker.generate_deck(args.Playlist_Name)
