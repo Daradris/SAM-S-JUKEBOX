@@ -1,16 +1,7 @@
-from pygame import mixer
-
-import datetime
-from data import MusicLibrary
-from imutils.video import VideoStream
-from pyzbar import pyzbar
-import imutils
 import random
-import time
-
-
 import argparse
 
+from data import MusicLibrary
 from system_setting import Setting
 from library import QRReader, MusicPlayer
 
@@ -55,7 +46,7 @@ class SamsJukebox:
                 music_player.switch_party_mode()#playlist mode ON
 
             elif detected_qr_code == 'A 7': # feeling lucky
-                detected_qr_code, _ = random.choice(list(music_library.owned_cards.items()))
+                music_player.play_song(random.choice(list(music_library.owned_cards.items())))
 
             elif detected_qr_code == 'A 10':
                 music_player.pause()
@@ -76,14 +67,10 @@ class SamsJukebox:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Welcome to Sam\'s Jukebox")
-    parser.add_argument('-P', '--library_path', type=str, default = None,
+    parser.add_argument('-P', '--library_path', type=str, default=None,
                         help='Please provide the absolute path of the music library')
 
     args = parser.parse_args()
     if args.library_path:
         SamsJukebox.setup(args.library_path)
     SamsJukebox.run()
-
-
-
-

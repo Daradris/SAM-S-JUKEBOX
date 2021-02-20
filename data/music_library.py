@@ -1,7 +1,5 @@
 import os
 import json
-# hash : song _ data : track number title album Artist
-
 import hashlib
 
 from mutagen.mp3 import MP3
@@ -32,8 +30,8 @@ class MusicLibrary:
                     )
                     hasheds = str(self.song_hash(stringf))
                     self.music_files[hasheds] = music_filepath
-        with open("data/library.json", 'w', encoding ='utf8') as json_file:
-            json.dump(self.music_files, json_file, ensure_ascii = False, indent=4)
+        with open("data/library.json", 'w', encoding='utf8') as json_file:
+            json.dump(self.music_files, json_file, ensure_ascii=False, indent=4)
 
     def song_hash(self, song_info):
         hash_object = hashlib.md5(song_info.encode())
@@ -66,3 +64,15 @@ class MusicLibrary:
     def add_card_to_owned_collection(self, hashcode):
         self.owned_cards[hashcode] = self.music_files[hashcode]
 
+    def combine_with_duplicate(root, rel_path):
+        rs = root.split("/")
+        rps = rel_path.split("/")
+        popped = False
+        for v in rs:
+            if v == rps[0]:
+                rps.pop(0)
+                popped = True
+            elif popped:
+                break
+
+        return "/".join(rs+rps)

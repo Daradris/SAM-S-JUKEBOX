@@ -34,10 +34,10 @@ prs.slide_height = Cm(9)
 blank_slide_layout = prs.slide_layouts[6]
 ##
 set_name = 'The Raccoon'
-playlist_filepath = os.path.normpath('ForgedCards/'+set_name+'/'+set_name +'.m3u' )
+playlist_filepath = os.path.normpath('H:/Music/Playlists/'+set_name +'.m3u' )
 with open(playlist_filepath) as f:
     content = f.readlines()
-music_filepaths = [x.strip() for x in content]
+music_filepaths = [x.replace('../', '').strip() for x in content]
 n = 0
 for music_file in music_filepaths:
 
@@ -201,3 +201,6 @@ for music_file in music_filepaths:
         p.alignment = PP_ALIGN.CENTER
 
 prs.save('ForgedCards\\test.pptx')
+
+
+
