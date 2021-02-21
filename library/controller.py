@@ -1,36 +1,14 @@
-class controller:
-    def __init__(self):
-        pass
+class Controller:
 
+    DEFAULT = 'A 0'
+    UNPAUSE = 'A 1'
+    PAUSE = 'A 2'
+    STOP = 'A 3'
+    PREVIOUS = 'A 4'
+    NEXT = 'A 5'
+    PLAYLIST_SWITCH = 'A 6'
+    FEELING_LUCK = 'A 7'
 
-class PythonSwitchStatement:
-
-    ACTION_QR_CODES = {}
-
-    def execute(self, qr_code):
-        default = ""
-        return getattr(self, 'case_' + str(month), lambda: default)()
-
-    def case_1(self):
-        return "January"
-
-    def case_2(self):
-        return "February"
-
-    def case_3(self):
-        return "March"
-
-    def case_4(self):
-        return "April"
-
-    def case_5(self):
-        return "May"
-
-    def case_6(self):
-        return "June"
-
-s = PythonSwitchStatement()
-
-print(s.switch(1))
-print(s.switch(3))
-print(s.switch(9))
+    UPDATE_LIBRARY = 'D 1'
+    KILL_CARD = 'D 2'
+    KILL_COLLECTION = 'D 3'

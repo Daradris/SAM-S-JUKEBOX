@@ -1,7 +1,9 @@
 from pygame import mixer
-import time
+import os, inspect, time
 
 class MusicPlayer:
+    BEEP_FILEPATH =  os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'system_setting', 'beep.mp3')
+
     def __init__(self):
         self.pause_state = False
         self.previous_songs = []
@@ -12,12 +14,15 @@ class MusicPlayer:
         mixer.init()
         self.music_sound = mixer.Channel(0)
         self.system_sound = mixer.Channel(1)
-        self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
+        self.beep()
+
+    def beep(self):
+        self.system_sound.play(mixer.Sound(self.BEEP_FILEPATH))
 
     def unpause(self):
         if self.current_song != '':
             if self.pause_state == True:
-                self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
+                self.beep()
                 time.sleep(1.0)
                 self.music_sound.unpause()
                 self.pause_state = False
@@ -30,7 +35,7 @@ class MusicPlayer:
             if self.pause_state == False:
                 self.music_sound.pause()
                 time.sleep(1.0)
-                self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
+                self.beep()
                 self.pause_state = True
 
     def stop(self):
@@ -38,7 +43,7 @@ class MusicPlayer:
             if self.pause_state == False:
                 self.music_sound.pause()
                 time.sleep(1.0)
-                self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
+                self.beep()
         self.pause_state = False
         self.previous_songs = []
         self.current_song = ''
@@ -55,7 +60,7 @@ class MusicPlayer:
                 self.current_song = self.previous_songs[0]
                 self.previous_songs.pop(0)
         if self.current_song:
-            self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
+            self.beep()
             time.sleep(1.0)
             self.music_sound.play(mixer.Sound(self.current_song))
 
@@ -66,14 +71,14 @@ class MusicPlayer:
             self.next_songs.pop(0)
 
             self.music_sound.pause()
-            self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
+            self.beep()
             time.sleep(1.0)
             self.music_sound.play(mixer.Sound(self.current_song))
 
     def switch_party_mode(self):
         if self.playlist_mode == False:
             self.playlist_mode = True
-            self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
+            self.beep()
 
     def play_song(self, song_filepath):
         if self.playlist_mode == False:
@@ -82,14 +87,14 @@ class MusicPlayer:
                 self.music_sound.pause()
             self.current_song = song_filepath
 
-            self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
+            self.beep()
             time.sleep(1.0)
             self.pause_state = False
             self.music_sound.play(mixer.Sound(song_filepath))
 
         if self.playlist_mode == True:
             self.next_songs.append(song_filepath)
-            self.system_sound.play(mixer.Sound("system_setting/beep.mp3"))
+            self.beep()
 
     def idle(self):
         isplaying = self.music_sound.get_busy()

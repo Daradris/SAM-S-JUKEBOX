@@ -1,10 +1,12 @@
 import os
+import inspect
 import configparser
 
 class Setting:
 
-    INI_FILEPATH = 'system_setting/option.ini'
+    INI_FILEPATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'option.ini')
     PLAYLIST_FOLDER = 'Playlists'
+
     @staticmethod
     def set_library_path(music_library_path):
         config = configparser.ConfigParser()
