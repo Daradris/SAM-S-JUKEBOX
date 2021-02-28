@@ -12,6 +12,8 @@ class SamsJukebox:
         Setting.set_library_path(library_path)
         music_library = MusicLibrary(Setting.library_path())
         music_library.setup()
+        music_player = MusicPlayer()
+        music_player.beep()
 
     @staticmethod
     def run():
@@ -30,13 +32,17 @@ class SamsJukebox:
 
             if detected_qr_code == Controller.UPDATE_LIBRARY:
                 music_player.pause()
+                music_player.beep()
                 music_library.setup()
+                music_player.beep()
                 music_player.unpause()
 
             elif detected_qr_code == Controller.KILL_CARD:
                 kill_card = True
+                music_player.beep()
 
             elif detected_qr_code == Controller.KILL_COLLECTION:
+                music_player.beep()
                 music_library.kill_collection()
 
             elif detected_qr_code == Controller.UNPAUSE:
