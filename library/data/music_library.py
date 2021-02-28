@@ -20,6 +20,15 @@ class MusicLibrary:
 
     def setup(self):
         conn = sqlite3.connect(self.LIBRARY_DB_PATH)
+        conn.execute('''CREATE TABLE library
+                (hash_code  CHAR(32)   PRIMARY KEY  NOT NULL,
+                 filepath   CHAR(250)               NOT NULL,
+                 owned      INT                     NOT NULL);''')
+        conn.commit()
+        conn.close()
+
+    def update(self):
+        conn = sqlite3.connect(self.LIBRARY_DB_PATH)
         for root, _, files in os.walk(self.library_filepath):
                     for file in files:
                         if file.endswith(".mp3"):
@@ -96,7 +105,7 @@ class MusicLibrary:
         conn = sqlite3.connect(self.LIBRARY_DB_PATH)
         query = """
         UPDATE library SET owned=0 WHERE hash_code='%s'
-        """ % hashed_qr_code
+        """ % hash_code
         conn.execute(query)
         conn.commit()
         conn.close()

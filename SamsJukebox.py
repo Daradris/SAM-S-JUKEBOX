@@ -32,7 +32,7 @@ class SamsJukebox:
             if detected_qr_code == Controller.UPDATE_LIBRARY:
                 music_player.pause()
                 music_player.beep()
-                music_library.setup()
+                music_library.update()
                 music_player.beep()
                 music_player.unpause()
 
