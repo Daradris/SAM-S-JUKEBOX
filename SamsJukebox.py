@@ -12,6 +12,7 @@ class SamsJukebox:
         Setting.set_library_path(library_path)
         music_library = MusicLibrary(Setting.library_path())
         music_library.setup()
+        music_library.update()
         music_player = MusicPlayer()
         music_player.beep()
 
@@ -80,12 +81,6 @@ class SamsJukebox:
 
         qr_reader.stop()
 
-    @staticmethod
-    def t():
-        music_library = MusicLibrary(Setting.library_path())
-        music_library.setup()
-        music_library.add_card_to_owned_collection('11b3eac55e')
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Welcome to Sam\'s Jukebox")
@@ -95,4 +90,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.library_path:
         SamsJukebox.setup(args.library_path)
-    SamsJukebox.t()
+    SamsJukebox.run()
