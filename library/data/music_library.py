@@ -38,7 +38,7 @@ class MusicLibrary:
                             hasheds = str(self.song_hash(stringf))
                             print (hasheds, music_filepath)
                             query = """
-                                   INSERT INTO library (hash_code, filepath, owned) VALUES ('%s','%s', 0)
+                                   INSERT INTO library (hash_code, filepath) VALUES ('%s','%s')
                                 """ % (hasheds, sqlescape(music_filepath))
                             conn.execute(query)
         conn.commit()
