@@ -4,11 +4,14 @@ import hashlib
 import inspect
 from mutagen.mp3 import MP3
 from mutagen.easyid3 import EasyID3
-
+import sqlite3
 
 class MusicLibrary:
 
     HASH_MAX_LENGTH = 10
+    LIBRARY_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'library.db')
+    COLLECTED_db_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'collected_cards.db')
+
     LIBRARY_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'library.json')
     COLLECTED_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'collected_cards.json')
 
@@ -16,6 +19,27 @@ class MusicLibrary:
         self.library_filepath = filepath
         self.owned_cards = {}
         self.music_files = ()
+
+    def setup_db(self):
+        conn = sqlite3.connect(self.COLLECTED_db_PATH)
+
+        conn.execute('''CREATE TABLE collectedcards
+                (HASH_QRCODE  INT        PRIMARY KEY  NOT NULL,
+                 FILEPATH     CHAR(250)               NOT NULL);''')
+        # conn = sqlite3.connect(self.LIBRARY_DB_PATH)
+        # for root, _, files in os.walk(self.library_filepath):
+        #             for file in files:
+        #                 if file.endswith(".mp3"):
+        #                     music_filepath = os.path.join(root, file)
+        #                     song_info = MP3(music_filepath, ID3=EasyID3)
+        #                     stringf = "{0} - {1} - {2} - {3}".format(
+        #                         song_info['tracknumber'][0],
+        #                         song_info['title'][0],
+        #                         song_info['album'][0],
+        #                         song_info['artist'][0]
+        #                     )
+        #                     hasheds = str(self.song_hash(stringf))
+        #                     # add to sql
 
     def setup(self):
         self.music_files = {}
