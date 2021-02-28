@@ -18,12 +18,10 @@ class SamsJukebox:
     @staticmethod
     def run():
         music_library = MusicLibrary(Setting.library_path())
-        music_library.load()
 
         qr_reader = QRReader()
 
         music_player = MusicPlayer()
-        kill_card = False
 
         while True:
             # QR CODE
@@ -36,10 +34,6 @@ class SamsJukebox:
                 music_library.setup()
                 music_player.beep()
                 music_player.unpause()
-
-            elif detected_qr_code == Controller.KILL_CARD:
-                kill_card = True
-                music_player.beep()
 
             elif detected_qr_code == Controller.KILL_COLLECTION:
                 music_player.beep()
@@ -69,14 +63,11 @@ class SamsJukebox:
             elif detected_qr_code != Controller.DEFAULT:
                 song_to_play = music_library.find_music_path_from_library(detected_qr_code)
 
-                if kill_card:
-                    music_library.remove_card_from_library(detected_qr_code)
-                    kill_card = False
 
+                #     kill_card = False
                 if song_to_play:
                     music_player.play_song(song_to_play)
-                    if not music_library.is_card_owned(detected_qr_code):
-                        music_library.add_card_to_owned_collection(detected_qr_code)
+
 
             music_player.idle()
 
