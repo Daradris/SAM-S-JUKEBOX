@@ -22,6 +22,7 @@ class SamsJukebox:
         qr_reader = QRReader()
 
         music_player = MusicPlayer()
+        kill_card = False
 
         while True:
             # QR CODE
@@ -34,6 +35,10 @@ class SamsJukebox:
                 music_library.setup()
                 music_player.beep()
                 music_player.unpause()
+
+            elif detected_qr_code == Controller.KILL_CARD:
+                kill_card = True
+                music_player.beep()
 
             elif detected_qr_code == Controller.KILL_COLLECTION:
                 music_player.beep()
@@ -58,20 +63,29 @@ class SamsJukebox:
                 music_player.switch_party_mode()
 
             elif detected_qr_code == Controller.FEELING_LUCK:
-                music_player.play_song(random.choice(list(music_library.owned_cards.items())))
+                music_player.play_song(music_library.get_random_owned_card())
 
             elif detected_qr_code != Controller.DEFAULT:
-                song_to_play = music_library.find_music_path_from_library(detected_qr_code)
+                song_to_play, owned = music_library.find_music_path_from_library(detected_qr_code)
 
-
-                #     kill_card = False
+                if kill_card:
+                    music_library.remove_card_from_library(detected_qr_code)
+                    kill_card = False
                 if song_to_play:
                     music_player.play_song(song_to_play)
-
+                    if owned == 0:
+                        music_library.add_card_to_owned_collection(detected_qr_code)
 
             music_player.idle()
 
         qr_reader.stop()
+
+    @staticmethod
+    def t():
+        music_library = MusicLibrary(Setting.library_path())
+        music_library.setup()
+        music_library.add_card_to_owned_collection('11b3eac55e')
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Welcome to Sam\'s Jukebox")
@@ -81,4 +95,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.library_path:
         SamsJukebox.setup(args.library_path)
-    SamsJukebox.run()
+    SamsJukebox.t()

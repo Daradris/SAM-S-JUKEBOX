@@ -12,17 +12,13 @@ class MusicLibrary:
     HASH_MAX_LENGTH = 10
     LIBRARY_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'library.db')
 
+    LIBRARY_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'library.json')
+    COLLECTED_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'collected_cards.json')
+
     def __init__(self, filepath):
         self.library_filepath = filepath
 
     def setup(self):
-
-        self.kill_collection()
-        conn = sqlite3.connect(self.LIBRARY_DB_PATH)
-        conn.execute('''CREATE TABLE library
-                (hash_code  CHAR(32)   PRIMARY KEY  NOT NULL,
-                 filepath   CHAR(250)               NOT NULL);''')
-
         conn = sqlite3.connect(self.LIBRARY_DB_PATH)
         for root, _, files in os.walk(self.library_filepath):
                     for file in files:
@@ -38,9 +34,17 @@ class MusicLibrary:
                             hasheds = str(self.song_hash(stringf))
                             print (hasheds, music_filepath)
                             query = """
-                                   INSERT INTO library (hash_code, filepath) VALUES ('%s','%s')
-                                """ % (hasheds, sqlescape(music_filepath))
-                            conn.execute(query)
+                            UPDATE library SET filepath='%s' WHERE hash_code='%s'
+                            """ % (sqlescape(music_filepath), hasheds)
+                            result = conn.execute(query)
+                            if result.rowcount > 0:
+                                print('Existing row updated.')
+                            else:
+                                query = """
+                                        INSERT INTO library (hash_code, filepath, owned) VALUES ('%s','%s', 0)
+                                        """ % (hasheds, sqlescape(music_filepath))
+                                conn.execute(query)
+                                print('New row inserted.')
         conn.commit()
         conn.close()
 
@@ -52,22 +56,24 @@ class MusicLibrary:
         conn = sqlite3.connect(self.LIBRARY_DB_PATH)
 
         query = """
-                SELECT filepath FROM library WHERE hash_code = '%s'
+                SELECT filepath, owned FROM library WHERE hash_code = '%s'
                 """ % sqlescape(hashcode)
         cursor = conn.execute(query)
         filepath = ''
+        owned = 0
         myresult = cursor.fetchone()
         if myresult:
             filepath=myresult[0]
+            owned = myresult[1]
         conn.close()
-        return filepath
+        return filepath, owned
 
-    def get_random_filepath(self):
+    def get_random_owned_card(self):
 
         conn = sqlite3.connect(self.LIBRARY_DB_PATH)
 
         query = """
-                SELECT filepath FROM library ORDER BY RANDOM() LIMIT 1;
+                SELECT filepath FROM library WHERE owned =1 ORDER BY RANDOM() LIMIT 1;
                 """
         cursor = conn.execute(query)
         filepath = ''
@@ -77,8 +83,31 @@ class MusicLibrary:
         conn.close()
         return filepath
 
+    def add_card_to_owned_collection(self, hashed_qr_code):
+        conn = sqlite3.connect(self.LIBRARY_DB_PATH)
+        query = """
+        UPDATE library SET owned=1 WHERE hash_code='%s'
+        """ % hashed_qr_code
+        conn.execute(query)
+        conn.commit()
+        conn.close()
+
+    def remove_card_from_library(self, hash_code):
+        conn = sqlite3.connect(self.LIBRARY_DB_PATH)
+        query = """
+        UPDATE library SET owned=0 WHERE hash_code='%s'
+        """ % hashed_qr_code
+        conn.execute(query)
+        conn.commit()
+        conn.close()
+
     def kill_collection(self):
         conn = sqlite3.connect(self.LIBRARY_DB_PATH)
         conn.execute('''DROP TABLE library;''')
+        conn.commit()
+        conn.execute('''CREATE TABLE library
+                (hash_code  CHAR(32)   PRIMARY KEY  NOT NULL,
+                 filepath   CHAR(250)               NOT NULL,
+                 owned      INT                     NOT NULL);''')
         conn.commit()
         conn.close()
