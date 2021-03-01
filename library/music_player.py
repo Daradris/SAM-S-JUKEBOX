@@ -81,10 +81,7 @@ class MusicPlayer:
             self.beep()
 
     def play_song(self, song_filepath):
-        import time
 
-        start = time.time()
-        print("inside time")
 
 
         if self.playlist_mode == False:
@@ -96,6 +93,11 @@ class MusicPlayer:
             self.beep()
             time.sleep(1.0)
             self.pause_state = False
+
+            import time
+
+            start = time.time()
+            print("inside time")
             self.music_sound.play(mixer.Sound(song_filepath))
             end = time.time()
             print(end - start)
