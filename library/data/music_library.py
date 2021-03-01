@@ -42,18 +42,17 @@ class MusicLibrary:
                             )
                             hasheds = str(self.song_hash(stringf))
                             print (hasheds, music_filepath)
-                            query = """
-                            UPDATE library SET filepath='%s' WHERE hash_code='%s'
-                            """ % (sqlescape(music_filepath), hasheds)
+                            query = '''
+                            UPDATE library SET filepath="%s" WHERE hash_code="%s"
+                            ''' % (music_filepath, hasheds)
                             result = conn.execute(query)
                             if result.rowcount > 0:
                                 print('Existing row updated.')
                             else:
-                                query = """
-                                        INSERT INTO library (hash_code, filepath, owned) VALUES ('%s','%s', 0)
-                                        """ % (hasheds, sqlescape(music_filepath))
+                                query = '''
+                                        INSERT INTO library (hash_code, filepath, owned) VALUES ("%s","%s", 0)
+                                        ''' % (hasheds, music_filepath)
                                 conn.execute(query)
-                                print('New row inserted.')
         conn.commit()
         conn.close()
 

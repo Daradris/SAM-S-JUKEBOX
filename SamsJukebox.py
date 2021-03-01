@@ -81,6 +81,9 @@ class SamsJukebox:
                     kill_card = False
                 if song_to_play:
                     music_player.play_song(song_to_play)
+                    end = time.time()
+                    print(end - start)
+                    print ('song_to_play')
                     if owned == 0:
                         music_library.add_card_to_owned_collection(detected_qr_code)
 
