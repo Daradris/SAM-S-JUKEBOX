@@ -94,8 +94,6 @@ class MusicPlayer:
             time.sleep(1.0)
             self.pause_state = False
 
-            import time
-
             start = time.time()
             print("inside time")
             self.music_sound.play(mixer.Sound(song_filepath))
