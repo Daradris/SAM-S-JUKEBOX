@@ -67,8 +67,14 @@ class SamsJukebox:
                 music_player.play_song(music_library.get_random_owned_card())
 
             elif detected_qr_code != Controller.DEFAULT:
-                song_to_play, owned = music_library.find_music_path_from_library(detected_qr_code)
+                import time
 
+                start = time.time()
+                print("hello")
+
+                song_to_play, owned = music_library.find_music_path_from_library(detected_qr_code)
+                end = time.time()
+                print(end - start)
                 if kill_card:
                     music_library.remove_card_from_library(detected_qr_code)
                     kill_card = False
