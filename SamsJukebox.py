@@ -75,6 +75,7 @@ class SamsJukebox:
                 song_to_play, owned = music_library.find_music_path_from_library(detected_qr_code)
                 end = time.time()
                 print(end - start)
+                print (song_to_play)
                 if kill_card:
                     music_library.remove_card_from_library(detected_qr_code)
                     kill_card = False
