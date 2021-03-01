@@ -80,6 +80,8 @@ class SamsJukebox:
                     music_library.remove_card_from_library(detected_qr_code)
                     kill_card = False
                 if song_to_play:
+                    start = time.time()
+                    print("hello")
                     music_player.play_song(song_to_play)
                     end = time.time()
                     print(end - start)
