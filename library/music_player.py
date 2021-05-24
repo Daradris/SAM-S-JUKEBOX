@@ -1,5 +1,4 @@
 from pygame
-
 import os, inspect, time
 
 class MusicPlayer:
