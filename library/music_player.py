@@ -1,4 +1,4 @@
-from pygame
+import pygame
 import os, inspect, time
 
 class MusicPlayer:
@@ -13,7 +13,6 @@ class MusicPlayer:
         pygame.mixer.pre_init(44100, -16, 2, 512)
         pygame.mixer.init()
         pygame.init()
-        mixer.init()
         self.music_sound = pygame.mixer.Channel(0)
         self.system_sound = pygame.mixer.Channel(1)
         self.beep()
