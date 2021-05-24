@@ -25,7 +25,6 @@ from system_setting import Setting
 
 class CardMaker:
     def __init__(self):
-
         pass
 
     def generate_deck(self, playlist_name):
