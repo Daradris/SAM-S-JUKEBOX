@@ -30,7 +30,6 @@ class CardMaker:
     def generate_deck(self, playlist_name):
         playlists_path = Setting.playlist_path()
         default_wd = os.getcwd()
-        print (default_wd)
         os.chdir(playlists_path)
 
         print (os.getcwd())
@@ -49,7 +48,6 @@ class CardMaker:
         if not os.path.isfile(logo_path):
             logo_path = os.path.join(default_wd, 'ForgedCards\\template\\logo.png')
         ribbon_path = os.path.join(default_wd, 'ForgedCards\\template\\ribbon.png')
-
 
         n = 0
 
