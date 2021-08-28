@@ -1,7 +1,9 @@
 # Python packages
 
-pygame==2.0.1
-opencv-python==4.5.1.48
-imutils==0.5.4
-pyzbar==0.1.8
-mutagen==1.45.1
+pygame
+opencv-python
+imutils
+pyzbar
+mutagen
+python-pptx
+qrcode

@@ -12,13 +12,20 @@ class MusicLibrary:
     HASH_MAX_LENGTH = 10
     LIBRARY_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'library.db')
 
-    LIBRARY_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'library.json')
-    COLLECTED_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'collected_cards.json')
-
     def __init__(self, filepath):
         self.library_filepath = filepath
 
     def setup(self):
+        self.drop_table_if_exist()
+        self.create_library()
+
+    def drop_table_if_exist(self):
+        conn = sqlite3.connect(self.LIBRARY_DB_PATH)
+        conn.execute( ''' DROP TABLE IF EXISTS library ''')
+        conn.commit()
+        conn.close()
+
+    def create_library(self):
         conn = sqlite3.connect(self.LIBRARY_DB_PATH)
         conn.execute('''CREATE TABLE library
                 (hash_code  CHAR(32)   PRIMARY KEY  NOT NULL,
@@ -38,10 +45,9 @@ class MusicLibrary:
                                 song_info['tracknumber'][0],
                                 song_info['title'][0],
                                 song_info['album'][0],
-                                song_info['artist'][0]
+                                song_info['albumartist'][0]
                             )
                             hasheds = str(self.song_hash(stringf))
-                            print (hasheds, music_filepath)
                             query = '''
                             UPDATE library SET filepath="%s" WHERE hash_code="%s"
                             ''' % (music_filepath, hasheds)
@@ -58,11 +64,10 @@ class MusicLibrary:
 
     def song_hash(self, song_info):
         hash_object = hashlib.md5(song_info.encode())
-        return hash_object.hexdigest()[0:self.HASH_MAX_LENGTH]
+        return hash_object.hexdigest()
 
     def find_music_path_from_library(self, hashcode):
         conn = sqlite3.connect(self.LIBRARY_DB_PATH)
-
         query = """
                 SELECT filepath, owned FROM library WHERE hash_code = '%s'
                 """ % sqlescape(hashcode)
@@ -77,9 +82,7 @@ class MusicLibrary:
         return filepath, owned
 
     def get_random_owned_card(self):
-
         conn = sqlite3.connect(self.LIBRARY_DB_PATH)
-
         query = """
                 SELECT filepath FROM library WHERE owned =1 ORDER BY RANDOM() LIMIT 1;
                 """
@@ -106,16 +109,5 @@ class MusicLibrary:
         UPDATE library SET owned=0 WHERE hash_code='%s'
         """ % hash_code
         conn.execute(query)
-        conn.commit()
-        conn.close()
-
-    def kill_collection(self):
-        conn = sqlite3.connect(self.LIBRARY_DB_PATH)
-        conn.execute('''DROP TABLE library;''')
-        conn.commit()
-        conn.execute('''CREATE TABLE library
-                (hash_code  CHAR(32)   PRIMARY KEY  NOT NULL,
-                 filepath   CHAR(250)               NOT NULL,
-                 owned      INT                     NOT NULL);''')
         conn.commit()
         conn.close()

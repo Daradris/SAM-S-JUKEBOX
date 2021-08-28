@@ -8,7 +8,7 @@ class QRReader:
         self.video_stream = VideoStream(src=0).start()
         time.sleep(1.0)
         self.previous_order = 'A 0'
-        self.time_of_first_blanck = datetime.datetime.now()
+        self.time_of_first_blanc = datetime.datetime.now()
         self.time_of_last_oder = datetime.datetime.now()
 
     def read(self):
@@ -26,8 +26,8 @@ class QRReader:
                 self.previous_order = new_order
             self.time_of_last_oder = datetime.datetime.now()
         if data == "":
-            self.time_of_first_blanck = datetime.datetime.now()
-            if (self.time_of_first_blanck - self.time_of_last_oder) > datetime.timedelta(seconds=3):
+            self.time_of_first_blanc = datetime.datetime.now()
+            if (self.time_of_first_blanc - self.time_of_last_oder) > datetime.timedelta(seconds=3):
                 self.previous_order = 'A 0'
         return new_order
 

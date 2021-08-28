@@ -7,7 +7,7 @@ from io import BytesIO
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3
 from PIL import Image
-from data import MusicLibrary
+from library.data import MusicLibrary
 import os
 import json
 import qrcode
@@ -20,7 +20,7 @@ from mutagen.mp3 import MP3
 from mutagen.easyid3 import EasyID3
 
 import os
-from system_setting import Setting
+from library.system_setting import Setting
 
 
 class CardMaker:
@@ -34,7 +34,7 @@ class CardMaker:
         os.chdir(playlists_path)
 
         print (os.getcwd())
-        playlist_filepath = os.path.join(playlists_path, playlist_name + '.m3u' )
+        playlist_filepath = os.path.join(playlists_path, playlist_name + '.txt' )
         if not os.path.isfile(playlist_filepath):
             return None
         #deal with logo
@@ -66,8 +66,10 @@ class CardMaker:
                     song_info['tracknumber'][0],
                     song_info['title'][0],
                     song_info['album'][0],
-                    song_info['artist'][0].split(',')[0]
+                    song_info['albumartist'][0]
                 )
+                print (song_info)
+                print (stringf)
                 hash_object = hashlib.md5(stringf.encode())
                 hasheds = str( hash_object.hexdigest()[0:10])
 
@@ -93,7 +95,7 @@ class CardMaker:
                 artist_p = artist_text_frame.paragraphs[0]
                 artist_run = artist_p.add_run()
 
-                artist_run.text = song_info['artist'][0].upper()
+                artist_run.text = song_info['albumartist'][0].upper()
                 artist_font = artist_run.font
                 artist_font.name = 'Selawik'
                 artist_font.size = Pt(8)
@@ -189,7 +191,7 @@ class CardMaker:
                 p.margin_left = Cm(0.25)
                 run.text = 'SAM\' JUKEBOX'
                 font = run.font
-                font.name = 'YellowTail'
+                font.name = ''
                 font.size = Pt(18)
                 font.bold = False
                 font.italic = None
