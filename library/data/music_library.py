@@ -47,6 +47,7 @@ class MusicLibrary:
                                 song_info['album'][0],
                                 song_info['albumartist'][0]
                             )
+                            print(stringf)
                             hasheds = str(self.song_hash(stringf))
                             query = '''
                             UPDATE library SET filepath="%s" WHERE hash_code="%s"
