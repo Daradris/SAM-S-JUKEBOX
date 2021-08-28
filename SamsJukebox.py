@@ -11,8 +11,6 @@ class SamsJukebox:
     def setup(library_path):
         Setting.set_library_path(library_path)
         music_library = MusicLibrary(Setting.library_path())
-        music_library.setup()
-        music_library.update()
         music_player = MusicPlayer()
         music_player.beep()
 
@@ -23,7 +21,8 @@ class SamsJukebox:
         qr_reader = QRReader()
 
         music_player = MusicPlayer()
-        kill_card = False
+        is_update_library = False
+        is_party_mode = False
 
         while True:
             # QR CODE
@@ -31,19 +30,11 @@ class SamsJukebox:
             music_player.clear_history()
 
             if detected_qr_code == Controller.UPDATE_LIBRARY:
-                music_player.pause()
+                if is_update_library == True:
+                    is_update_library = False
+                else:
+                    is_update_library = True
                 music_player.beep()
-                music_library.update()
-                music_player.beep()
-                music_player.unpause()
-
-            elif detected_qr_code == Controller.KILL_CARD:
-                kill_card = True
-                music_player.beep()
-
-            elif detected_qr_code == Controller.KILL_COLLECTION:
-                music_player.beep()
-                music_library.setup()
 
             elif detected_qr_code == Controller.UNPAUSE:
                 music_player.unpause()
@@ -61,21 +52,26 @@ class SamsJukebox:
                 music_player.play_next()
 
             elif detected_qr_code == Controller.PLAYLIST_SWITCH:
-                music_player.switch_party_mode()
+                if is_party_mode == True:
+                    is_party_mode = False
+                else:
+                    is_party_mode = True
+                music_player.beep()
 
             elif detected_qr_code == Controller.FEELING_LUCK:
-                music_player.play_song(music_library.get_random_owned_card())
+                music_player.play_song(music_library.get_random_song_from_library())
 
             elif detected_qr_code != Controller.DEFAULT:
-                song_to_play, owned = music_library.find_music_path_from_library(detected_qr_code)
+                song_to_play = music_library.get_song_filepath(detected_qr_code)
 
-                if kill_card:
-                    music_library.remove_card_from_library(detected_qr_code)
-                    kill_card = False
-                if song_to_play:
+                if is_party_mode:
+                    music_player.add_to_play_next(song_to_play)
+                elif is_update_library:
+                    detected_qr_code
+                    Setting.set_library_path(detected_qr_code)
+                    music_library = MusicLibrary(Setting.library_path())
+                else:
                     music_player.play_song(song_to_play)
-                    if owned == 0:
-                        music_library.add_card_to_owned_collection(detected_qr_code)
 
             music_player.idle()
 

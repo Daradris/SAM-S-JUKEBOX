@@ -10,5 +10,4 @@ class Controller:
     FEELING_LUCK = 'A 7'
 
     UPDATE_LIBRARY = 'D 1'
-    KILL_CARD = 'D 2'
-    KILL_COLLECTION = 'D 3'
+

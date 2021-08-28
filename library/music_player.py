@@ -82,24 +82,17 @@ class MusicPlayer:
             self.beep()
 
     def play_song(self, song_filepath):
-        if self.playlist_mode == False:
-            if self.current_song:
-                self.previous_songs.insert(0, self.current_song)
-                self.music_sound.pause()
-            self.current_song = song_filepath
+        if self.current_song:
+            self.previous_songs.insert(0, self.current_song)
+            self.music_sound.pause()
+        self.current_song = song_filepath
+        self.beep()
+        self.pause_state = False
+        self.music_sound.play(pygame.mixer.Sound(song_filepath))
 
-            self.beep()
-            time.sleep(1.0)
-            self.pause_state = False
-
-            start = time.time()
-            print("inside time")
-            self.music_sound.play(pygame.mixer.Sound(song_filepath))
-            end = time.time()
-            print(end - start)
-        if self.playlist_mode == True:
-            self.next_songs.append(song_filepath)
-            self.beep()
+    def add_to_play_next(self, song_filepath):
+        self.next_songs.append(song_filepath)
+        self.beep()
 
     def idle(self):
         isplaying = self.music_sound.get_busy()
