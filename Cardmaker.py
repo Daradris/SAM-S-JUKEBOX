@@ -160,7 +160,7 @@ class CardMaker:
                 self.add_SAMsJukebox(slide)
                 self.add_MusicInYourHand(slide)
 
-        prs.save(os.path.join(self.default_wd, 'ForgedCards', playlist_name+ '.pptx'))
+        prs.save(os.path.join(Setting.playlist_path(), playlist_name+ '.pptx'))
 
     def add_QR_code(self, slide):
         top = left = Cm(0)
