@@ -72,6 +72,7 @@ class SamsJukebox:
                     music_player.beep()
                     is_update_library = False
                 else:
+                    print("Playing: " + song_to_play)
                     music_player.play_song(song_to_play)
 
             music_player.idle()
