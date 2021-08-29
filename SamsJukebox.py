@@ -67,9 +67,10 @@ class SamsJukebox:
                 if is_party_mode:
                     music_player.add_to_play_next(song_to_play)
                 elif is_update_library:
-                    detected_qr_code
                     Setting.set_library_path(detected_qr_code)
                     music_library = MusicLibrary(Setting.library_path())
+                    music_player.beep()
+                    is_update_library = False
                 else:
                     music_player.play_song(song_to_play)
 
