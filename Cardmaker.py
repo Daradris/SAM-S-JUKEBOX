@@ -1,6 +1,3 @@
-# !/usr/bin/python
-# coding=utf-8
-
 import argparse, os
 from datetime import date
 from io import BytesIO
@@ -23,38 +20,36 @@ class CardMaker:
     def __init__(self):
         self.default_wd = os.getcwd()
         self.ribbon_path = os.path.join(self.default_wd, 'ForgedCards/template/ribbon.png')
+        self.current_year = date.today().year
+        self.playlists_path = Setting.playlist_path()
+        self.library_path = Setting.library_path()
+        os.chdir(self.playlists_path)
 
     def generate_deck(self, playlist_name):
-        current_date = date.today()
-        current_year = current_date.year
-        playlists_path = Setting.playlist_path()
-        library_path = Setting.library_path()
-        os.chdir(playlists_path)
-
-        playlist_filepath = os.path.join(playlists_path, playlist_name + '.m3u' )
+        playlist_filepath = os.path.join(self.playlists_path, playlist_name + '.m3u' )
         if not os.path.isfile(playlist_filepath):
+            print('Playlist not found')
             return None
         #deal with logo
-
         with open(playlist_filepath, "r", encoding='utf-8') as f:
             content = f.readlines()
-
         music_filepaths = [x.strip() for x in content]
 
         logo_path = os.path.join(playlist_name + '.png' )
         if not os.path.isfile(logo_path):
             logo_path = os.path.join(self.default_wd, 'ForgedCards/template/logo.png')
-        n = 0
 
         prs = Presentation()
         prs.slide_width = Cm(6)
         prs.slide_height = Cm(9)
         blank_slide_layout = prs.slide_layouts[6]
+
+        n = 0
         for music_file in music_filepaths:
             if music_file.endswith(".mp3") and music_file.startswith('../'):
                 music_file = music_file[3:]
                 print (music_file)
-                songpath = library_path + '/' + music_file
+                songpath = self.library_path + '/' + music_file
 
                 n = n+1
                 song_info = MP3(songpath, ID3=EasyID3)
@@ -137,7 +132,7 @@ class CardMaker:
                 bottom_right_p = bottom_right_text_frame.paragraphs[0]
                 bottom_right_run = bottom_right_p.add_run()
 
-                bottom_right_run.text = playlist_name  + ' – ' + str(current_year) + ' ' + str('%02d'%(n)) + '/' + str('%02d'%(len(music_filepaths)))
+                bottom_right_run.text = playlist_name  + ' – ' + str(self.current_year) + ' ' + str('%02d'%(n)) + '/' + str('%02d'%(len(music_filepaths)))
                 bottom_right_font = bottom_right_run.font
                 bottom_right_font.name = 'Selawik'
                 bottom_right_font.size = Pt(5)
@@ -160,7 +155,7 @@ class CardMaker:
                 self.add_SAMsJukebox(slide)
                 self.add_MusicInYourHand(slide)
 
-        prs.save(os.path.join(Setting.playlist_path(), playlist_name+ '.pptx'))
+        prs.save(os.path.join(self.playlists_path, playlist_name+ '.pptx'))
 
     def add_QR_code(self, slide):
         top = left = Cm(0)
@@ -234,8 +229,6 @@ class CardMaker:
             print (song_genre)
         if img_path != '':
             pic = front_slide.shapes.add_picture(img_path, Cm(0.4), Cm(7.4), Cm(1), Cm(1))
-
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Welcome to Sam\'s Jukebox Cards Maker")
