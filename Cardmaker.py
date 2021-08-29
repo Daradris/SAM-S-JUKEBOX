@@ -221,7 +221,7 @@ class CardMaker:
         elif song_genre == 'Rap/Hip Hop':
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Rap.png')
         elif song_genre == 'Contemporary Christian':
-            img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/contemporary-christian.png')
+            img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Contemporary-christian.png')
         elif song_genre == 'Rock':
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Rock.png')
         elif song_genre == 'Alternative':
