@@ -22,7 +22,7 @@ from library.system_setting import Setting
 class CardMaker:
     def __init__(self):
         self.default_wd = os.getcwd()
-        self.ribbon_path = os.path.join(self.default_wd, 'ForgedCards\\template\\ribbon.png')
+        self.ribbon_path = os.path.join(self.default_wd, 'ForgedCards/template/ribbon.png')
 
     def generate_deck(self, playlist_name):
         current_date = date.today()
@@ -43,7 +43,7 @@ class CardMaker:
 
         logo_path = os.path.join(playlist_name + '.png' )
         if not os.path.isfile(logo_path):
-            logo_path = os.path.join(self.default_wd, 'ForgedCards\\template\\logo.png')
+            logo_path = os.path.join(self.default_wd, 'ForgedCards/template/logo.png')
         n = 0
 
         prs = Presentation()
