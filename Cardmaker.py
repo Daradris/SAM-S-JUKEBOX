@@ -1,3 +1,6 @@
+# !/usr/bin/python
+# coding=utf-8
+
 import argparse, os
 from datetime import date
 from io import BytesIO

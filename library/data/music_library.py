@@ -15,5 +15,5 @@ class MusicLibrary:
             for root, _, files in os.walk(self.library_filepath):
                 for file in files:
                     if file.endswith(".mp3"):
-                        self.all_songs.append(file)
+                        self.all_songs.append(os.path.join(root, file))
         return random.choice(self.all_songs)

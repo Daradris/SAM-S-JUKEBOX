@@ -59,26 +59,34 @@ class SamsJukebox:
                 music_player.beep()
 
             elif detected_qr_code == Controller.FEELING_LUCK:
-                music_player.play_song(music_library.get_random_song_from_library())
+                music_player.beep()
+                detected_qr_code = music_library.get_random_song_from_library()
+                if is_party_mode:
+                    print("Playing Next Lucky: " + song_to_play)
+                    music_player.add_to_play_next(song_to_play)
+                else:
+                    print("Playing Lucky: " + song_to_play)
+                    music_player.play_song(song_to_play)
 
             elif detected_qr_code != Controller.DEFAULT:
-                song_to_play = music_library.get_song_filepath(detected_qr_code)
-
-                if is_party_mode:
-                    music_player.add_to_play_next(song_to_play)
-                elif is_update_library:
+                if is_update_library:
                     Setting.set_library_path(detected_qr_code)
                     music_library = MusicLibrary(Setting.library_path())
                     music_player.beep()
                     is_update_library = False
+                    print('New Library Location: ' + detected_qr_code)
                 else:
-                    print("Playing: " + song_to_play)
-                    music_player.play_song(song_to_play)
+                    song_to_play = music_library.get_song_filepath(detected_qr_code)
+                    if is_party_mode:
+                        print("Playing Next: " + song_to_play)
+                        music_player.add_to_play_next(song_to_play)
+                    else:
+                        print("Playing: " + song_to_play)
+                        music_player.play_song(song_to_play)
 
             music_player.idle()
 
         qr_reader.stop()
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Welcome to Sam\'s Jukebox")
