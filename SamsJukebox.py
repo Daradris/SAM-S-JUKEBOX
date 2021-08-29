@@ -1,5 +1,6 @@
 import random
 import argparse
+import time
 
 from library import QRReader, MusicPlayer, Controller
 from library.system_setting import Setting
@@ -9,32 +10,35 @@ class SamsJukebox:
 
     @staticmethod
     def setup(library_path):
-        Setting.set_library_path(library_path)
-        music_library = MusicLibrary(Setting.library_path())
+        setting = Setting.set_library_path(library_path)
         music_player = MusicPlayer()
         music_player.beep()
 
     @staticmethod
     def run():
-        music_library = MusicLibrary(Setting.library_path())
+        setting = Setting()
+        music_library = MusicLibrary(setting)
 
         qr_reader = QRReader()
 
         music_player = MusicPlayer()
         is_update_library = False
         is_party_mode = False
+        music_player.beep()
 
         while True:
             # QR CODE
             detected_qr_code = qr_reader.read()
             music_player.clear_history()
 
+            if detected_qr_code != Controller.DEFAULT:
+                music_player.beep()
+
             if detected_qr_code == Controller.UPDATE_LIBRARY:
                 if is_update_library == True:
                     is_update_library = False
                 else:
                     is_update_library = True
-                music_player.beep()
 
             elif detected_qr_code == Controller.UNPAUSE:
                 music_player.unpause()
@@ -56,33 +60,31 @@ class SamsJukebox:
                     is_party_mode = False
                 else:
                     is_party_mode = True
-                music_player.beep()
 
             elif detected_qr_code == Controller.FEELING_LUCK:
-                music_player.beep()
                 detected_qr_code = music_library.get_random_song_from_library()
                 if is_party_mode:
-                    print("Playing Next Lucky: " + song_to_play)
-                    music_player.add_to_play_next(song_to_play)
+                    print("Playing Next Lucky: " + detected_qr_code)
+                    music_player.add_to_play_next(detected_qr_code)
                 else:
-                    print("Playing Lucky: " + song_to_play)
-                    music_player.play_song(song_to_play)
+                    print("Playing Lucky: " + detected_qr_code)
+                    music_player.play_song(detected_qr_code)
 
             elif detected_qr_code != Controller.DEFAULT:
+
                 if is_update_library:
                     Setting.set_library_path(detected_qr_code)
-                    music_library = MusicLibrary(Setting.library_path())
-                    music_player.beep()
+                    music_library = MusicLibrary(Setting.set_library_path(detected_qr_code))
                     is_update_library = False
                     print('New Library Location: ' + detected_qr_code)
                 else:
-                    song_to_play = music_library.get_song_filepath(detected_qr_code)
-                    if is_party_mode:
-                        print("Playing Next: " + song_to_play)
-                        music_player.add_to_play_next(song_to_play)
-                    else:
-                        print("Playing: " + song_to_play)
-                        music_player.play_song(song_to_play)
+                    songs_to_play = music_library.get_songs_filepath(detected_qr_code)
+                    for song in songs_to_play:
+                        print("Playing Next: " + '\n'.join(songs_to_play))
+                        music_player.add_to_play_next(song)
+                    if not is_party_mode:
+                        music_player.play_next()
+                        print("Playing: " + songs_to_play[0])
 
             music_player.idle()
 

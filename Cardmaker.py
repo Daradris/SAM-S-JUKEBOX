@@ -53,32 +53,6 @@ class CardMaker:
         prs.slide_height = Cm(9)
         blank_slide_layout = prs.slide_layouts[6]
 
-        opener_slide = prs.slides.add_slide(blank_slide_layout)
-        opener_slide.shapes.add_picture(os.path.join(self.default_wd, 'ForgedCards/template/opener.png'), Cm(0), Cm(0), Cm(6), Cm(6))
-        self.add_ribbon(opener_slide)
-        self.add_SAMsJukebox(opener_slide)
-        self.add_MusicInYourHand(opener_slide)
-
-        back_opener_slide = prs.slides.add_slide(blank_slide_layout)
-        back_opener_slide.shapes.add_picture(os.path.join(self.default_wd, logo_path), Cm(2.25), Cm(0.5), Cm(1.5), Cm(1.5))
-        song_txBox = back_opener_slide.shapes.add_textbox(Cm(0.4), Cm(2), Cm(5.2), Cm(1))
-        song_text_frame = song_txBox.text_frame
-        song_text_frame.clear()
-        song_p = song_text_frame.paragraphs[0]
-        song_run = song_p.add_run()
-
-        song_run.text = 'SAM\'S JUKEBOX'
-        song_font = song_run.font
-        song_font.name = 'Selawik'
-        song_font.size = Pt(7)
-        song_font.bold = False
-        song_font.italic = None
-        song_font.color.rgb = RGBColor(0, 0, 0)
-        song_text_frame.margin_top = Cm(0.1)
-        song_text_frame.margin_bottom = Cm(0.1)
-        song_text_frame.margin_right = Cm(0)
-        song_text_frame.margin_left = Cm(0)
-
         for controller, qr_text in self.CONTROLLER:
 
             front_controller_slide = prs.slides.add_slide(blank_slide_layout)
@@ -95,43 +69,64 @@ class CardMaker:
             self.add_SAMsJukebox(back_controller_slide)
             self.add_MusicInYourHand(back_controller_slide)
 
-        # n = 0
-        # for music_file in music_filepaths:
-        #     if music_file.endswith(".mp3") and music_file.startswith('../'):
-        #         music_file = music_file[3:]
-        #         print (music_file)
-        #         songpath = self.library_path + '/' + music_file
 
-        #         n = n+1
-        #         song_info = MP3(songpath, ID3=EasyID3)
-        #         albumartist = song_info['albumartist'][0]
-        #         tracknumber = song_info['tracknumber'][0]
-        #         song_date = song_info['date'][0]
-        #         song_title = song_info['title'][0]
-        #         song_genre = song_info['genre'][0]
-        #         qr_code = qrcode.make(music_file)
-        #         qr_code.save(os.path.join(self.default_wd, 'ForgedCards/tmp/qr_code.png'))
 
-        #         tags = ID3(songpath)
-        #         pict = tags.get("APIC:").data
-        #         im = Image.open(BytesIO(pict))
-        #         im.save(os.path.join(self.default_wd, 'ForgedCards/tmp/album_cover.png'))
 
-        #         # FRONT SLIDE
-        #         front_slide = prs.slides.add_slide(blank_slide_layout)
-        #         self.add_album_cover_info(front_slide, albumartist, song_title)
-        #         # bottom left
-        #         self.add_bottomleft(front_slide, tracknumber + ' ' + song_date)
-        #         # bottom right
-        #         self.add_front_bottom_right(front_slide, playlist_name, n, music_filepaths, logo_path)
-        #         self.add_genre(front_slide, song_genre)
+        # FRONT SLIDE
+        front_slide_playlist = prs.slides.add_slide(blank_slide_layout)
+        self.add_album_cover_info(front_slide_playlist, playlist_name, 'Playlist')
+        # bottom left
+        self.add_bottomleft(front_slide_playlist, '')
+        # bottom right
+        self.add_front_bottom_right(front_slide_playlist, playlist_name, 0, music_filepaths, logo_path)
+        self.add_genre(front_slide_playlist, 'Playlist')
 
-        #         # QR Code Side
-        #         qr_slide = prs.slides.add_slide(blank_slide_layout)
-        #         self.add_QR_code(qr_slide)
-        #         self.add_ribbon(qr_slide)
-        #         self.add_SAMsJukebox(qr_slide)
-        #         self.add_MusicInYourHand(qr_slide)
+        # QR Code Side
+        qr_slide = prs.slides.add_slide(blank_slide_layout)
+        qr_code = qrcode.make(playlist_name + '.m3u')
+        qr_code.save(os.path.join(self.default_wd, 'ForgedCards/tmp/qr_code.png'))
+        self.add_QR_code(qr_slide)
+        self.add_ribbon(qr_slide)
+        self.add_SAMsJukebox(qr_slide)
+        self.add_MusicInYourHand(qr_slide)
+
+        n = 0
+        for music_file in music_filepaths:
+            if music_file.endswith(".mp3") and music_file.startswith('../'):
+                music_file = music_file[3:]
+                print (music_file)
+                songpath = self.library_path + '/' + music_file
+
+                n = n+1
+                song_info = MP3(songpath, ID3=EasyID3)
+                albumartist = song_info['albumartist'][0]
+                tracknumber = song_info['tracknumber'][0]
+                song_date = song_info['date'][0]
+                song_title = song_info['title'][0]
+                song_genre = song_info['genre'][0]
+                qr_code = qrcode.make(music_file)
+                qr_code.save(os.path.join(self.default_wd, 'ForgedCards/tmp/qr_code.png'))
+
+                tags = ID3(songpath)
+                pict = tags.get("APIC:").data
+                im = Image.open(BytesIO(pict))
+                im.save(os.path.join(self.default_wd, 'ForgedCards/tmp/album_cover.png'))
+
+                # FRONT SLIDE
+                front_slide = prs.slides.add_slide(blank_slide_layout)
+                self.add_album_cover_info(front_slide, albumartist, song_title)
+                # bottom left
+                self.add_bottomleft(front_slide, tracknumber + ' ' + song_date)
+                # bottom right
+                self.add_front_bottom_right(front_slide, playlist_name, n, music_filepaths, logo_path)
+                self.add_genre(front_slide, song_genre)
+
+                # QR Code Side
+                qr_slide = prs.slides.add_slide(blank_slide_layout)
+                self.add_QR_code(qr_slide)
+                self.add_ribbon(qr_slide)
+                self.add_SAMsJukebox(qr_slide)
+                self.add_MusicInYourHand(qr_slide)
 
         prs.save(os.path.join(self.playlists_path, playlist_name+ '.pptx'))
 
@@ -281,6 +276,8 @@ class CardMaker:
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Dance.png')
         elif song_genre == 'Electro':
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Electro.png')
+        elif song_genre == 'Playlist':
+            img_path = os.path.join(self.default_wd, 'ForgedCards/controller/Playlist.png')
         else:
             print (song_genre)
         if img_path != '':
