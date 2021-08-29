@@ -7,10 +7,9 @@ class MusicLibrary:
         self.all_songs = None
 
     def get_song_filepath(self, detected_qr_code):
-        print (os.path.join(self.library_filepath, detected_qr_code))
         return os.path.join(self.library_filepath, detected_qr_code)
 
-    def get_random_owned_card(self):
+    def get_random_song_from_library(self):
         if self.all_songs is None:
             self.all_songs = []
             for root, _, files in os.walk(self.library_filepath):
