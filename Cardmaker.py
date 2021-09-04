@@ -30,12 +30,11 @@ class CardMaker:
         self.default_wd = os.getcwd()
         self.ribbon_path = os.path.join(self.default_wd, 'ForgedCards/template/ribbon.png')
         self.current_year = date.today().year
-        self.playlists_path = Setting.playlist_path()
-        self.library_path = Setting.library_path()
-        os.chdir(self.playlists_path)
+        self.settings = Setting()
+        os.chdir(self.settings.playlist_path)
 
     def generate_deck(self, playlist_name):
-        playlist_filepath = os.path.join(self.playlists_path, playlist_name + '.m3u' )
+        playlist_filepath = os.path.join(self.settings.playlist_path, playlist_name + '.m3u' )
         if not os.path.isfile(playlist_filepath):
             print('Playlist not found')
             return None
@@ -95,7 +94,7 @@ class CardMaker:
             if music_file.endswith(".mp3") and music_file.startswith('../'):
                 music_file = music_file[3:]
                 print (music_file)
-                songpath = self.library_path + '/' + music_file
+                songpath = self.settings.library_path + '/' + music_file
 
                 n = n+1
                 song_info = MP3(songpath, ID3=EasyID3)
@@ -128,7 +127,7 @@ class CardMaker:
                 self.add_SAMsJukebox(qr_slide)
                 self.add_MusicInYourHand(qr_slide)
 
-        prs.save(os.path.join(self.playlists_path, playlist_name+ '.pptx'))
+        prs.save(os.path.join(self.settings.playlist_path, playlist_name+ '.pptx'))
 
     def add_album_cover_info(self, front_slide, albumartist, song_title):
         front_slide.shapes.add_picture(os.path.normpath(os.path.join(self.default_wd, 'ForgedCards/tmp/album_cover.png')), Cm(0.4), Cm(0.4), Cm(5.2), Cm(5.2))
@@ -268,14 +267,16 @@ class CardMaker:
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Rap.png')
         elif song_genre == 'Contemporary Christian':
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Contemporary-christian.png')
-        elif song_genre == 'Rock':
+        elif song_genre in ['Rock', 'Metal']:
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Rock.png')
         elif song_genre == 'Alternative':
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Alternative.png')
         elif song_genre == 'Dance':
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Dance.png')
-        elif song_genre == 'Electro':
+        elif song_genre in ['Electro', 'Electronic']:
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Electro.png')
+        elif song_genre in ['Jazz']:
+            img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Jazz.png')
         elif song_genre == 'Playlist':
             img_path = os.path.join(self.default_wd, 'ForgedCards/controller/Playlist.png')
         else:
@@ -289,5 +290,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     cardmaker = CardMaker()
-    #cardmaker.generate_deck(args.Playlist_Name)
-    cardmaker.generate_deck('The Raccoon')
+    cardmaker.generate_deck(args.Playlist_Name)
