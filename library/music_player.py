@@ -1,5 +1,5 @@
 import pygame
-import os, inspect, time
+import os, inspect, time, random
 
 class MusicPlayer:
     BEEP_FILEPATH =  os.path.join(os.path.dirname(os.path.abspath(inspect.getframeinfo(inspect.currentframe()).filename)), 'system_setting', 'beep.mp3')
@@ -75,6 +75,7 @@ class MusicPlayer:
         print (self.next_songs)
         print (self.current_song)
         print(self.previous_songs)
+
     def switch_party_mode(self):
         if self.playlist_mode == False:
             self.playlist_mode = True
@@ -88,8 +89,8 @@ class MusicPlayer:
         time.sleep(1.0)
         self.music_sound.play(pygame.mixer.Sound(song_filepath))
 
-    def add_to_play_next(self, song_filepath):
-        self.next_songs.append(song_filepath)
+    def add_to_play_next(self, songs_filepath):
+        self.next_songs = self.next_songs + songs_filepath
 
     def idle(self):
         isplaying = self.music_sound.get_busy()
@@ -99,3 +100,10 @@ class MusicPlayer:
                 self.current_song = self.next_songs[0]
                 self.next_songs.pop(0)
                 self.music_sound.play(pygame.mixer.Sound(self.current_song))
+
+    def shuffle_play_next(self):
+        random.shuffle(self.next_songs)
+        print (self.next_songs)
+
+    def add_to_play_immediately_next(self, song_filepath):
+        self.next_songs = song_filepath + self.next_songs

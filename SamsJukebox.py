@@ -64,11 +64,12 @@ class SamsJukebox:
             elif detected_qr_code == Controller.FEELING_LUCK:
                 detected_qr_code = music_library.get_random_song_from_library()
                 if is_party_mode:
-                    print("Playing Next Lucky: " + detected_qr_code)
                     music_player.add_to_play_next(detected_qr_code)
                 else:
-                    print("Playing Lucky: " + detected_qr_code)
                     music_player.play_song(detected_qr_code)
+
+            elif detected_qr_code == Controller.SHUFFLE:
+                music_player.shuffle_play_next()
 
             elif detected_qr_code != Controller.DEFAULT:
 
@@ -76,15 +77,13 @@ class SamsJukebox:
                     Setting.set_library_path(detected_qr_code)
                     music_library = MusicLibrary(Setting.set_library_path(detected_qr_code))
                     is_update_library = False
-                    print('New Library Location: ' + detected_qr_code)
                 else:
                     songs_to_play = music_library.get_songs_filepath(detected_qr_code)
-                    for song in songs_to_play:
-                        print("Playing Next: " + '\n'.join(songs_to_play))
-                        music_player.add_to_play_next(song)
+                    if is_party_mode:
+                        music_player.add_to_play_next(songs_to_play)
                     if not is_party_mode:
+                        music_player.add_to_play_immediately_next(songs_to_play)
                         music_player.play_next()
-                        print("Playing: " + songs_to_play[0])
 
             music_player.idle()
 

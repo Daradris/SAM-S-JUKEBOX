@@ -43,7 +43,7 @@ class CardMaker:
             content = f.readlines()
         music_filepaths = [x.strip() for x in content]
 
-        logo_path = os.path.join(playlist_filepath, playlist_name + '.png' )
+        logo_path = os.path.join(self.settings.playlist_path, playlist_name + '.png' )
         if not os.path.isfile(logo_path):
             logo_path = os.path.join(self.default_wd, 'ForgedCards/template/logo.png')
 

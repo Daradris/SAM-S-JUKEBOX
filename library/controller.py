@@ -8,6 +8,7 @@ class Controller:
     NEXT = 'A 5'
     PLAYLIST_SWITCH = 'A 6'
     FEELING_LUCK = 'A 7'
+    SHUFFLE = 'A 8'
 
     UPDATE_LIBRARY = 'D 1'
 
