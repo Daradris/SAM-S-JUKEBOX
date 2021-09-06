@@ -59,9 +59,6 @@ class MusicPlayer:
         if self.current_song:
             time.sleep(1.0)
             self.music_sound.play(pygame.mixer.Sound(self.current_song))
-        print (self.next_songs)
-        print (self.current_song)
-        print(self.previous_songs)
 
     def play_next(self):
         if self.next_songs:
@@ -72,9 +69,6 @@ class MusicPlayer:
             self.music_sound.pause()
             time.sleep(1.0)
             self.music_sound.play(pygame.mixer.Sound(self.current_song))
-        print (self.next_songs)
-        print (self.current_song)
-        print(self.previous_songs)
 
     def switch_party_mode(self):
         if self.playlist_mode == False:
@@ -103,7 +97,6 @@ class MusicPlayer:
 
     def shuffle_play_next(self):
         random.shuffle(self.next_songs)
-        print (self.next_songs)
 
     def add_to_play_immediately_next(self, song_filepath):
         self.next_songs = song_filepath + self.next_songs
