@@ -33,6 +33,14 @@ class CardMaker:
         self.settings = Setting()
         os.chdir(self.settings.playlist_path)
 
+    def generate_all(self):
+        files = os.listdir(self.settings.playlist_path)
+
+        for file in files:
+            if file.endswith('.m3u'):
+                print(file.replace('.m3u', ''))
+                self.generate_deck(file.replace('.m3u', ''))
+
     def generate_deck(self, playlist_name):
         playlist_filepath = os.path.join(self.settings.playlist_path, playlist_name + '.m3u' )
         if not os.path.isfile(playlist_filepath):
@@ -67,9 +75,6 @@ class CardMaker:
             self.add_ribbon(back_controller_slide)
             self.add_SAMsJukebox(back_controller_slide)
             self.add_MusicInYourHand(back_controller_slide)
-
-
-
 
         # FRONT SLIDE
         front_slide_playlist = prs.slides.add_slide(blank_slide_layout)
@@ -273,7 +278,7 @@ class CardMaker:
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Alternative.png')
         elif song_genre == 'Dance':
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Dance.png')
-        elif song_genre in ['Electro', 'Electronic']:
+        elif song_genre in ['Electro', 'Electronic', 'Electronica']:
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Electro.png')
         elif song_genre in ['Jazz']:
             img_path = os.path.join(self.default_wd, 'ForgedCards/template/musicgenre/Jazz.png')
@@ -290,4 +295,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     cardmaker = CardMaker()
-    cardmaker.generate_deck(args.Playlist_Name)
+    if args.Playlist_Name:
+        cardmaker.generate_deck(args.Playlist_Name)
+    else:
+        cardmaker.generate_all()
